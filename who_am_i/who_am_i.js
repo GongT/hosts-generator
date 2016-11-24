@@ -10,16 +10,16 @@ module.exports = {
 	localhost: undefined,
 	internal: undefined,
 	external: undefined,
-	noSSL: false,
 };
 
 // try find myself
 let foundMySelf;
 
-if (process.env.DOCKER_MY_SERVER_ID) {
-	debug('who_am_i: found server id from env [%s]', process.env.DOCKER_MY_SERVER_ID);
-	foundMySelf = serverIpMap[process.env.DOCKER_MY_SERVER_ID];
-	foundMySelf.id = process.env.DOCKER_MY_SERVER_ID;
+const forceServerId = JsonEnv.deploy.forceServerId || process.env.DOCKER_MY_SERVER_ID;
+if (forceServerId) {
+	debug('who_am_i: found server id from env [%s]', forceServerId);
+	foundMySelf = serverIpMap[forceServerId];
+	foundMySelf.id = forceServerId;
 } else {
 	const matchedItems = [];
 	Object.keys(ifaces).forEach((ifName) => {
@@ -29,7 +29,8 @@ if (process.env.DOCKER_MY_SERVER_ID) {
 			
 			const ip = ifcfg.address.trim();
 			
-			return serverIpMap.forEach(function (def, id) {
+			return Object.keys(serverIpMap).forEach(function (id) {
+				const def = serverIpMap[id];
 				def.id = id;
 				if (def.detect === ip) {
 					debug('       match self: %s', id);

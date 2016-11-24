@@ -12,26 +12,18 @@ if (!serverDefine || !Object.keys(serverDefine).length) {
 	throw new Error('no config.deploy exists');
 }
 
-const serverMap = {}, ids = [];
+const serverMap = {};
 Object.keys(serverDefine).forEach((networkGroup) => {
+	if (networkGroup === 'forceServerId') {
+		return;
+	}
 	serverDefine[networkGroup].machines.forEach((d) => {
-		const serverId = `${networkGroup}-${d.name}`;
+		const serverId = `${networkGroup}:${d.name}`;
 		d.network = networkGroup;
 		d.id = serverId;
 		serverMap[serverId] = d;
-		ids.push(serverId);
 	});
 });
-serverMap.forEach = function (cb) {
-	ids.forEach((k) => {
-		cb.call(serverMap, serverMap[k], k);
-	});
-};
-serverMap.some = function (cb) {
-	return ids.some((k) => {
-		return cb.call(serverMap, serverMap[k], k);
-	});
-};
 
 debug('server map: %s', JSON.stringify(serverMap, null, 4));
 module.exports = serverMap;

@@ -3,8 +3,18 @@
 export interface A {
 	XXX: number;
 }
-export interface B {
-	
+export interface ServerObject {
+	front: boolean,
+	name: string,
+	detect: string,
+	internal: string,
+	external: string,
+	network: string,
+	id: string,
 }
-export const whoAmI: A;
-export const serverMap: B;
+
+export const whoAmI: ServerObject;
+export const serverMap: {[id: string]: ServerObject};
+
+export function forEach(cb: (obj: ServerObject)=> void): void;
+export function some(cb: (obj: ServerObject)=> boolean): boolean;

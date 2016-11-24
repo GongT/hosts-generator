@@ -30,6 +30,7 @@ build.addPlugin(EPlugins.typescript, {
 build.environmentVariable('DEBUG', 'ip:*,host:*');
 
 build.volume('/etc', './host-etc');
+build.volume('/var/run', './host-var-run');
 
 // build.prependDockerFile('/path/to/docker/file');
 // build.appendDockerFile('/path/to/docker/file');
@@ -38,4 +39,9 @@ JsonEnv.gfw.npmRegistry.user = '';
 JsonEnv.gfw.npmRegistry.url = JsonEnv.gfw.npmRegistry.upstream;
 
 process.env.DEBUG += ',ip:*';
-require('../who_am_i');
+try {
+	require(require('path').resolve(__dirname, '../who_am_i/index'));
+} catch (e) {
+	console.error(e);
+	process.exit(1);
+}
