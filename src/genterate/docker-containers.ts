@@ -2,14 +2,14 @@ import {getServiceAlias, getServiceName} from "../lib/labels";
 const baseDomain = JsonEnv.baseDomainName;
 
 export function runningDockerContainers(list: DockerInspect[]) {
-	const nameLen = 3 + Math.max.apply(undefined, list.map((item) => {
-			const name = item.Name.replace(/^\//, '').replace(/\//, '-');
-			if (/[A-Z]/.test(name)) {
-				return 0;
-			} else {
-				return name.length;
-			}
-		}));
+	const nameLen = Math.max.apply(undefined, list.map((item) => {
+		const name = item.Name.replace(/^\//, '').replace(/\//, '-');
+		if (/[A-Z]/.test(name)) {
+			return 0;
+		} else {
+			return name.length;
+		}
+	}));
 	return list.map((item) => {
 		const ip = item.NetworkSettings.IPAddress;
 		let name = item.Name.replace(/^\//, '').replace(/\//, '-');
@@ -26,11 +26,11 @@ export function runningDockerContainers(list: DockerInspect[]) {
 		
 		const space = (new Array(nameLen - name.length)).fill(' ').join('');
 		
-		const l1 = `${ip}\t${item.Config.Hostname} ${name}${space}${item.Id}`;
+		const l1 = `${ip}\t${item.Config.Hostname} ${name}`;
 		let l2 = '';
 		
 		if (label || alias) {
-			l2 = `\n${ip}\t`;
+			l2 = `${space}     `;
 			if (label) {
 				l2 += `${label} ${label}.${baseDomain} `;
 			}
