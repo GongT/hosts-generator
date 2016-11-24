@@ -18,7 +18,7 @@ Object.keys(serverDefine).forEach((networkGroup) => {
 		return;
 	}
 	serverDefine[networkGroup].machines.forEach((d) => {
-		const serverId = `${networkGroup}:${d.name}`;
+		const serverId = `${d.name}.${networkGroup}`;
 		d.network = networkGroup;
 		d.id = serverId;
 		serverMap[serverId] = d;
