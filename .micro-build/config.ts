@@ -38,4 +38,4 @@ JsonEnv.gfw.npmRegistry.user = '';
 JsonEnv.gfw.npmRegistry.url = JsonEnv.gfw.npmRegistry.upstream;
 
 process.env.DEBUG += ',ip:*';
-require('../who_am_i/index');
+require('../who_am_i');

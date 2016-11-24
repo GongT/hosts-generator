@@ -1,21 +1,5 @@
 {
-	"restartable": "rs",
 	"ignore": [
-		".git",
-		".idea",
-		".jsonenv",
-		"logs",
-		"node_modules",
-		"jspm_packages",
-		".npm",
-		"typings"
-	],
-	"verbose": false,
-	"execMap": {
-		"js": "node --harmony"
-	},
-	"events": {
-		"restart": "echo -e '\\n-------------------restart-------------------\\n'"
-	},
-	"ext": "js json"
+		"who_am_i/"
+	]
 }

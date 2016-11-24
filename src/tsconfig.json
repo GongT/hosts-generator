@@ -19,7 +19,7 @@
 		"sourceMap": true,
 		"baseUrl": "./",
 		"typeRoots": [
-			"../typings", "../node_modules/@types"
+			"../node_modules/@types"
 		],
 		"types": [],
 		"outDir": "../dist",
