@@ -4,10 +4,15 @@ const baseDomain = JsonEnv.baseDomainName;
 
 export function serviceNotOnCurrent(list: DockerInspect[], upstreamIp: string) {
 	const runningService = list.map(getServiceName).filter(e => !!e);
+	console.log('runningService=%s', runningService);
+	console.log('allKnownService=%s', allKnownService);
 	
-	return allKnownService.filter((servName) => {
-		return runningService.indexOf(servName) === -1;
-	}).map((servName) => {
-		return `${upstreamIp}\t${servName} ${servName}.${baseDomain}`;
-	}).join('\n');
+	const debugstr = `# runningService=${runningService.join(',').replace(/\n/g, '')}
+# allKnownService=${allKnownService.join(',').replace(/\n/g, '')}`;
+	
+	return debugstr + allKnownService.filter((servName) => {
+			return runningService.indexOf(servName) === -1;
+		}).map((servName) => {
+			return `${upstreamIp}\t${servName} ${servName}.${baseDomain}`;
+		}).join('\n');
 }
