@@ -1,6 +1,6 @@
 export function getServiceName(item: DockerInspect) {
 	const name = item.Name.replace(/^\//, '').replace(/\//, '-');
-	return /^[a-z\-0-9.]+$/.test(name)? name : '';
+	return /^[a-z\-0-9._]+$/.test(name)? name : '';
 }
 
 export function getServiceMap(list: DockerInspect[]): {[id: string]: DockerInspect} {
@@ -19,7 +19,7 @@ export function getAllNames(item: DockerInspect) {
 	const name = getServiceName(item);
 	
 	if (!name) {
-		console.error(`invalid service name: ${item.Name}`);
+		// console.error(`invalid service name: ${item.Name}`);
 		return [];
 	}
 	

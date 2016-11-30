@@ -8,7 +8,8 @@ export function serviceNotOnCurrent(list: DockerInspect[], upstreamIp: string) {
 	console.log('allKnownService=%s', allKnownService);
 	
 	const debugstr = `# runningService=${runningService.join(',').replace(/\n/g, '')}
-# allKnownService=${allKnownService.join(',').replace(/\n/g, '')}`;
+# allKnownService=${allKnownService.join(',').replace(/\n/g, '')}
+`;
 	
 	return debugstr + allKnownService.filter((servName) => {
 			return runningService.indexOf(servName) === -1;

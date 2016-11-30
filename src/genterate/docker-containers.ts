@@ -6,6 +6,13 @@ export function runningDockerContainers(list: DockerInspect[]) {
 		const ip = item.NetworkSettings.IPAddress;
 		const allNames = getAllNames(item);
 		
-		return `${ip}\t${item.Config.Hostname} ${allNames.join(' ')}`;
+		if (/^[a-z\-0-9._]+$/.test(item.Config.Hostname)) {
+			allNames.push(item.Config.Hostname);
+		}
+		if (allNames.length) {
+			return `${ip}\t${allNames.join(' ')}`;
+		} else {
+			return `# no valid hostname for container ${item.Config.Hostname}`;
+		}
 	}).join('\n')
 }
