@@ -1,9 +1,9 @@
 import {some, whoAmI} from "../../who_am_i/index";
-const nginxName = JsonEnv.nginxDockerName;
+
 export function detectUpstream(inspects: DockerInspect[]) {
 	let upstreamIp: string, commentId: string;
 	inspects.some((insp) => {
-		if (insp.Name.replace(/^\//g, '') === nginxName) {
+		if (insp.Name.replace(/^\//g, '') === 'nginx') {
 			commentId = `docker: ${insp.Name} - ${insp.Id}`;
 			upstreamIp = insp.NetworkSettings.IPAddress;
 			return true;

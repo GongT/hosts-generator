@@ -35,7 +35,7 @@ build.volume('/var/run', './host-var-run');
 // build.prependDockerFile('/path/to/docker/file');
 // build.appendDockerFile('/path/to/docker/file');
 
-JsonEnv.gfw.npmRegistry.disableLayer = true;
+build.npmInstallSource(JsonEnv.gfw.npmRegistry.upstream);
 
 process.env.DEBUG += ',ip:*';
 try {
