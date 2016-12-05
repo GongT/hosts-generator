@@ -14,6 +14,9 @@ const projectName = 'host-generator';
 build.baseImage('node');
 build.projectName(projectName);
 build.domainName(`${projectName}.${JsonEnv.baseDomainName}`);
+
+build.isInChina(JsonEnv.gfw.isInChina);
+build.npmInstallSource(JsonEnv.gfw.npmRegistry.upstream);
 build.install('./package.json');
 
 // build.forwardPort(80, 'tcp').publish(8080);
@@ -34,8 +37,6 @@ build.volume('/var/run', './host-var-run');
 
 // build.prependDockerFile('/path/to/docker/file');
 // build.appendDockerFile('/path/to/docker/file');
-
-build.npmInstallSource(JsonEnv.gfw.npmRegistry.upstream);
 
 process.env.DEBUG += ',ip:*';
 try {
