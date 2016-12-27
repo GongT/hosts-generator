@@ -22,7 +22,7 @@ export function detectUpstream(inspects: DockerInspect[]) {
 		some((obj) => {
 			if (obj.front) {
 				commentId = `internet server: ${obj.id}`;
-				upstreamIp = obj.internal;
+				upstreamIp = obj.external;
 				return true;
 			}
 		});

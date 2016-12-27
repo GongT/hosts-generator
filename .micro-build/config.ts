@@ -11,7 +11,7 @@ declare const build: MicroBuildConfig;
 
 const projectName = 'host-generator';
 
-build.baseImage('node');
+build.baseImage('node', 'alpine');
 build.projectName(projectName);
 build.domainName(`${projectName}.${JsonEnv.baseDomainName}`);
 
