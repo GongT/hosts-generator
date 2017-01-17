@@ -17,9 +17,7 @@ build.domainName(`${projectName}.${JsonEnv.baseDomainName}`);
 
 build.isInChina(JsonEnv.gfw.isInChina);
 build.npmInstallSource(JsonEnv.gfw.npmRegistry.upstream);
-build.install('./package.json');
-
-// build.forwardPort(80, 'tcp').publish(8080);
+build.npmInstall('./package.json');
 
 build.startupCommand('dist/boot.js');
 build.shellCommand('/usr/local/bin/node');
@@ -36,13 +34,24 @@ build.environmentVariable('DEBUG', 'ip:*,host:*');
 build.volume('/etc', './host-etc');
 build.volume('/var/run', './host-var-run');
 
-// build.prependDockerFile('/path/to/docker/file');
-// build.appendDockerFile('/path/to/docker/file');
+build.noDataCopy(true);
 
-process.env.DEBUG += ',ip:*';
-try {
-	require(require('path').resolve(__dirname, '../who_am_i/index'));
-} catch (e) {
-	console.error(e);
-	process.exit(1);
-}
+build.onConfig(() => {
+	process.env.DEBUG += ',ip:*';
+	try {
+		const resolve = require('path').resolve;
+		const fs = require('fs');
+		
+		const save = resolve(__dirname, '../src/config.ts');
+		const whoAmI = require(resolve(__dirname, '../who_am_i/who_am_i'));
+		const serverMap = require(resolve(__dirname, '../who_am_i/get_server_ip'));
+		
+		fs.writeFileSync(save, `
+export const whoAmI = ${JSON.stringify(whoAmI, null, 4)};
+export const serverMap = ${JSON.stringify(serverMap, null, 4)};
+`, 'utf-8');
+	} catch (e) {
+		console.error(e);
+		process.exit(1);
+	}
+});

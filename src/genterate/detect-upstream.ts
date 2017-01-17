@@ -1,4 +1,5 @@
-import {some, whoAmI} from "../../who_am_i/index";
+import {some} from "../lib/who_am_i";
+import {whoAmI} from "../config";
 
 export function detectUpstream(inspects: DockerInspect[]) {
 	let upstreamIp: string, commentId: string;

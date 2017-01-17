@@ -1,4 +1,5 @@
-import {serverMap, whoAmI} from "../../who_am_i/index";
+import {serverMap, whoAmI} from "../config";
+
 let cache = '';
 export function generateIdIpMap() {
 	if (cache) {
