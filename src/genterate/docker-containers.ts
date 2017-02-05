@@ -7,7 +7,7 @@ export function runningDockerContainers(list: DockerInspect[]) {
 		const allNames = getAllNames(item);
 		
 		if (/^[a-z\-0-9._]+$/.test(item.Config.Hostname)) {
-			allNames.push(item.Config.Hostname);
+			allNames.unshift(item.Config.Hostname);
 		}
 		if (allNames.length) {
 			return `${ip}\t${allNames.join(' ')}`;

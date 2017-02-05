@@ -12,7 +12,7 @@ declare const helper: MicroBuildHelper;
  +==================================+
  */
 
-const projectName = 'host-generator';
+const projectName = 'hosts-generator';
 
 build.baseImage('node', 'alpine');
 build.projectName(projectName);

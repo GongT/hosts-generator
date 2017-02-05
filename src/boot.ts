@@ -10,6 +10,10 @@ import {serviceNotOnCurrent} from "./genterate/outside-services";
 import {mergeHosts} from "./lib/read-write";
 
 const debug = Debug('host:main');
+const sub_debug = Debug('host:gen');
+export function debugFn(string) {
+	sub_debug(`  ${string.replace(/\n/g, '\n\t    ')}`);
+}
 
 handleChange((list) => {
 	debug('docker status changed!');
@@ -18,7 +22,7 @@ handleChange((list) => {
 	
 	hostParts.push('\n# LOCAL INTERFACE: ');
 	if (process.env.HOST_LOOP_IP) {
-		hostParts.push(`${process.env.HOST_LOOP_IP}  localhost-loop docker0`);
+		hostParts.push(`${process.env.HOST_LOOP_IP}  localhost-loop docker-host`);
 	} else {
 		hostParts.push(`## ERROR. No ipv4 detected. rebuild may resolve this error.`);
 	}
@@ -31,13 +35,13 @@ handleChange((list) => {
 	
 	hostParts.push('\n# UPSTREAM: ');
 	const ret = detectUpstream(list);
-	hostParts.push(ret.host);
+	hostParts.push(ret.hostContent);
 	
 	hostParts.push('\n# CURRENT RUNNING DOCKER: ');
 	hostParts.push(runningDockerContainers(list));
 	
 	hostParts.push('\n# SERVICE NOT ON CURRENT SYSTEM: ');
-	hostParts.push(serviceNotOnCurrent(list, ret.ip));
+	hostParts.push(serviceNotOnCurrent(list, ret.upstreamList));
 	
 	const newHostsSection = hostParts.join('\n');
 	

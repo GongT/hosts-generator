@@ -1,6 +1,10 @@
+import {debugFn} from "../boot";
+import {array_unique} from "./array_unique";
+import {getServiceKnownAlias} from "../genterate/alias.inc";
+
 export function getServiceName(item: DockerInspect) {
 	const name = item.Name.replace(/^\//, '').replace(/\//, '-');
-	return /^[a-z\-0-9._]+$/.test(name) ? name : '';
+	return /^[a-z\-0-9._]+$/.test(name)? name : '';
 }
 
 export function getServiceMap(list: DockerInspect[]): {[id: string]: DockerInspect} {
@@ -15,46 +19,52 @@ export function getServiceMap(list: DockerInspect[]): {[id: string]: DockerInspe
 }
 
 export function getAllNames(item: DockerInspect) {
-	let ret = [];
 	const name = getServiceName(item);
-	console.error('docker container service:', name);
+	debugFn(`docker container service: ${name}`);
 	
 	if (!name) {
-		// console.error(`invalid service name: ${item.Name}`);
+		debugFn(` - invalid service name: ${item.Name}`);
 		return [];
 	}
 	
-	const alias = getServiceAlias(item);
+	const alias = getContainerAlias(item);
 	
-	ret.push(name);
-	if (alias.length) {
-		ret = ret.concat(alias);
-	}
+	let ret = [name].concat(alias, getServiceKnownAlias(name));
 	
+	ret = array_unique(ret);
+	
+	debugFn(`all names: \n   ${ret.join('\n   ')}`);
 	return ret;
 }
 
-export function getServiceAlias(ins: DockerInspect) {
-	console.error('    no alias');
+export function getContainerAlias(ins: DockerInspect) {
 	if (!ins.Config.Labels) {
+		debugFn(`  container alias: not set - no labels`);
 		return [];
 	}
 	let alias: any = ins.Config.Labels['org.special-label.alias'];
-	if (alias && typeof alias === 'string') {
+	if (!alias) {
+		debugFn(`  container alias: not set - no alias`);
+		return [];
+	}
+	
+	if (typeof alias === 'string') {
 		try {
 			alias = JSON.parse(alias);
 		} catch (e) {
-			console.error('\x1B[38;5;9m%s\x1B[0m', new Error(`alias json invalid: ${ins.Name}`));
+			debugFn(`\x1B[38;5;9mError:\x1B[0m JSON ${alias} not valid:\n${e.stack}`);
 			return [];
 		}
 	}
-	if (alias && !Array.isArray(alias)) {
+	
+	if (!Array.isArray(alias)) {
 		alias = [alias]
 	}
-	console.error('    alias: ', alias);
-	if (alias) {
-		return alias;
-	} else {
+	if (!alias.length) {
+		debugFn(`  container alias: not set - zero length`);
 		return [];
 	}
+	
+	debugFn(`  container alias: [ ${alias.join(', ')} ]`);
+	return alias;
 }

@@ -124,6 +124,6 @@ let changeCount = 0;
 
 export function handleChange(cb: Handler) {
 	changeCount++;
-	console.log('docker change count=%s', changeCount);
+	debug('docker change count=%s', changeCount);
 	handlers.push(cb);
 }
