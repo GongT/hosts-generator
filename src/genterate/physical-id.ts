@@ -14,7 +14,7 @@ export async function generateIdIpMap() {
 			return `${item.internal}\t${item.id}`;
 		} else {
 			const external = ('' + (item.external || item.interface)).trim();
-			if (/\d+\.\d+\.\d+\.\d+/.test(external)) {
+			if (/\d+\.\d+\.\d+\.\d+(:\d+)?/.test(external)) {
 				return `${external}\t${item.id}`;
 			} else {
 				const ipList = await resolveDnsIpv4Promise(external);
@@ -34,6 +34,8 @@ const resolve4 = require('dns').resolve4;
 let nextCacheInvalid = new Date;
 let cached = [];
 function resolveDnsIpv4Promise(hostname): Promise<string[]> {
+	hostname = hostname.replace(/:\d+$/, ''); // no port
+	
 	return new Promise((resolve, reject) => {
 		if (new Date > nextCacheInvalid) {
 			resolve4(hostname, {ttl: true}, (err, hostlist) => {
