@@ -15,30 +15,32 @@ export function debugFn(string) {
 	sub_debug(`  ${string.replace(/\n/g, '\n\t    ')}`);
 }
 
-handleChange((list) => {
+handleChange(mainHandler);
+
+async function mainHandler(list) {
 	debug('docker status changed!');
 	
 	const hostParts = [];
 	
 	hostParts.push('\n# LOCAL INTERFACE: ');
 	if (process.env.HOST_LOOP_IP) {
-		hostParts.push(`${process.env.HOST_LOOP_IP}  localhost-loop docker-host`);
+		hostParts.push(`${process.env.HOST_LOOP_IP}\tlocalhost-loop docker-host`);
 	} else {
 		hostParts.push(`## ERROR. No ipv4 detected. rebuild may resolve this error.`);
 	}
 	if (process.env.HOST_LOOP_IP6) {
-		hostParts.push(`${process.env.HOST_LOOP_IP6}  localhost-loop6 docker0-ipv6`);
+		hostParts.push(`${process.env.HOST_LOOP_IP6}\tlocalhost-loop6 docker-host6`);
 	}
 	
 	hostParts.push('\n# PHYSICAL HOST: ');
-	hostParts.push(generateIdIpMap());
+	hostParts.push(await generateIdIpMap());
 	
 	hostParts.push('\n# UPSTREAM: ');
 	const ret = detectUpstream(list);
 	hostParts.push(ret.hostContent);
 	
 	hostParts.push('\n# CURRENT RUNNING DOCKER: ');
-	hostParts.push(runningDockerContainers(list));
+	hostParts.push(runningDockerContainers(list, ret.upstreamList));
 	
 	hostParts.push('\n# SERVICE NOT ON CURRENT SYSTEM: ');
 	hostParts.push(serviceNotOnCurrent(list, ret.upstreamList));
@@ -47,4 +49,6 @@ handleChange((list) => {
 	
 	console.log(' ----\n%s\n ----', newHostsSection);
 	mergeHosts(newHostsSection);
-});
+	
+	return true;
+}

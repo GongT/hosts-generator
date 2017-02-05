@@ -3,6 +3,10 @@
 	"version": "0.0.0",
 	"description": "",
 	"repository": {},
+	"engines": {
+		"node": ">=7.5.0"
+	},
+	"engineStrict": true,
 	"dependencies": {
 		"@gongt/jenv-data": "^1.2.3",
 		"@types/debug": "0.0.29",

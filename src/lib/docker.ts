@@ -13,7 +13,7 @@ export const docker = new Dockerode({
 });
 const emitter = new DockerEvents({docker});
 
-let busy = false, t: NodeJS.Timer = null, ot: NodeJS.Timer = null;
+let busy = false, pending = false, t: NodeJS.Timer = null, ot: NodeJS.Timer = null;
 
 // watch
 emitter.on("connect", function () {
@@ -64,7 +64,7 @@ function scheduleGenerate(why, target?) {
 }
 
 function delayGenerate() {
-	if (t || busy) {
+	if (t) {
 		return;
 	}
 	if (!t) {
@@ -80,6 +80,7 @@ function delayGenerate() {
 let cache = {};
 function realDo() {
 	if (busy) {
+		pending = true;
 		return;
 	}
 	
@@ -92,13 +93,21 @@ function realDo() {
 		}
 		re_cache(list);
 		
-		handlers.forEach((cb) => {
-			cb(list);
+		const wait = handlers.map((cb) => {
+			return cb(list);
 		});
+		
+		return Promise.all(wait);
 	}).catch((e) => {
+		busy = false;
 		console.error(e);
+		return true;
+	}).then(() => {
+		busy = false;
+		if (pending) {
+			realDo();
+		}
 	});
-	busy = false;
 }
 
 function re_cache(list: DockerInspect[]) {
@@ -124,6 +133,6 @@ let changeCount = 0;
 
 export function handleChange(cb: Handler) {
 	changeCount++;
-	debug('docker change count=%s', changeCount);
+	debug('handle docker change (handler count=%s)', changeCount);
 	handlers.push(cb);
 }
