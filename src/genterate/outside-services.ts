@@ -1,5 +1,4 @@
-import {getServiceName} from "../lib/labels";
-import {getServiceKnownAlias} from "./alias.inc";
+import {getServiceName, getServiceKnownAlias} from "../lib/labels";
 const allKnownService = Object.keys(JsonEnv.services);
 
 import * as Debug from "debug";

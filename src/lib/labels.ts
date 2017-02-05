@@ -1,21 +1,27 @@
 import {debugFn} from "../boot";
 import {array_unique} from "./array_unique";
-import {getServiceKnownAlias} from "../genterate/alias.inc";
 
 export function getServiceName(item: DockerInspect) {
 	const name = item.Name.replace(/^\//, '').replace(/\//, '-');
 	return /^[a-z\-0-9._]+$/.test(name)? name : '';
 }
 
-export function getServiceMap(list: DockerInspect[]): {[id: string]: DockerInspect} {
-	const ret = {};
-	list.forEach((ins) => {
-		const name = getServiceName(ins);
-		if (name) {
-			ret[name] = ins;
-		}
-	});
-	return ret;
+const baseDomain = JsonEnv.baseDomainName;
+
+export function getServiceKnownAlias(servName) {
+	if (!JsonEnv.services.hasOwnProperty(servName)) {
+		debugFn(`  service alias: not a service`);
+		return [`${servName}.${baseDomain}`];
+	}
+	const def = JsonEnv.services[servName];
+	const alias: string[] = def['alias'] || [];
+	
+	const outerDomain = `${def.outerSubDomainName || servName}.${baseDomain}`;
+	debugFn(`  service alias: domain - ${outerDomain}`);
+	alias.unshift(outerDomain);
+	alias.unshift(servName);
+	
+	return array_unique(alias);
 }
 
 export function getAllNames(item: DockerInspect) {
