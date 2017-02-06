@@ -32,7 +32,7 @@ build.addPlugin(EPlugins.typescript, {
 	target: 'dist',
 });
 
-build.environmentVariable('DEBUG', 'ip:*,host:*');
+build.environmentVariable('DEBUG', 'ip:*,host:*,docker');
 
 build.volume('/var/run', './host-var-run');
 
