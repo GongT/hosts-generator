@@ -28,7 +28,7 @@ emitter.on("start", function (message) {
 	ot = setTimeout(() => {
 		scheduleGenerate("container started", message.id);
 		ot = null;
-	}, 2000);
+	}, 3000);
 });
 emitter.on("die", function (message) {
 	debug("container stopped: %j", message);
@@ -38,17 +38,26 @@ emitter.on("die", function (message) {
 	ot = setTimeout(() => {
 		scheduleGenerate("container stopped", message.id);
 		ot = null;
-	}, 2000);
+	}, 3000);
 });
 
-debug("connecting to docker api");
-emitter.start();
-// start !
+export function connectDocker() {
+	debug("connecting to docker api");
+	emitter.start();
+}
+export function disconnectDocker() {
+	debug("disconnect from docker api");
+	emitter.stop();
+}
 
 function scheduleGenerate(why, target?) {
 	if (target) {
 		debug('check %s is in building process...', target);
 		docker.getContainer(target).inspect((err, inspect) => {
+			if (err) {
+				debug('%s is stopped, seems it is fail to start, or in fast building process.', target);
+				return;
+			}
 			const text = JSON.stringify(inspect, null, 2);
 			if (/BUILDING['"]?\s*[=:]\s*['"]?yes/.test(text)) {
 				debug('%s is in building process. ignore.', target);
@@ -73,7 +82,7 @@ function delayGenerate() {
 			t = null;
 			
 			realDo();
-		}, 2000);
+		}, 3000);
 	}
 }
 

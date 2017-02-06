@@ -3,7 +3,7 @@ import * as Debug from "debug";
 import "source-map-support/register";
 import "@gongt/jenv-data/global";
 import {generateIdIpMap} from "./genterate/physical-id";
-import {handleChange} from "./lib/docker";
+import {handleChange, connectDocker} from "./lib/docker";
 import {detectUpstream} from "./genterate/detect-upstream";
 import {runningDockerContainers} from "./genterate/docker-containers";
 import {serviceNotOnCurrent} from "./genterate/outside-services";
@@ -16,6 +16,7 @@ export function debugFn(string) {
 }
 
 handleChange(mainHandler);
+connectDocker();
 
 async function mainHandler(list) {
 	debug('docker status changed!');
