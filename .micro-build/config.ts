@@ -36,8 +36,8 @@ build.environmentVariable('DEBUG', 'ip:*,host:*');
 
 build.volume('/var/run', './host-var-run');
 
-build.dependService('hosts-generator', 'https://github.com/GongT/microservice-dnsmasq.git');
-build.dockerRunArgument('--volumes-from=hosts-generator');
+build.dependService('microservice-dnsmasq', 'https://github.com/GongT/microservice-dnsmasq.git');
+build.dockerRunArgument('--volumes-from=microservice-dnsmasq');
 
 build.noDataCopy(true);
 
