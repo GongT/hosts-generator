@@ -16,7 +16,7 @@ export function debugFn(string) {
 }
 
 handleChange(mainHandler);
-connectDocker();
+connectDocker(2000);
 
 async function mainHandler(list) {
 	debug('docker status changed!');
