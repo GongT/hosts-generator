@@ -20,8 +20,9 @@ build.domainName(`${projectName}.${JsonEnv.baseDomainName}`);
 
 build.isInChina(JsonEnv.gfw.isInChina);
 build.npmInstallSource(JsonEnv.gfw.npmRegistry.upstream);
-build.npmInstall('./package.json');
+build.npmInstall('./package.json', ['git', 'python', 'g++', 'make']);
 
+build.systemdType('notify');
 build.startupCommand('dist/boot.js');
 build.shellCommand('/usr/local/bin/node');
 // build.stopCommand('stop.sh');

@@ -2,6 +2,7 @@
 import * as Debug from "debug";
 import "source-map-support/register";
 import "@gongt/jenv-data/global";
+import {initServiceWait} from "typescript-common-library/server/boot/init-systemd-service";
 import {generateIdIpMap} from "./genterate/physical-id";
 import {handleChange, connectDocker} from "./lib/docker";
 import {detectUpstream} from "./genterate/detect-upstream";
@@ -15,7 +16,14 @@ export function debugFn(string) {
 	sub_debug(`  ${string.replace(/\n/g, '\n\t    ')}`);
 }
 
-handleChange(mainHandler);
+let inited = false;
+handleChange((list) => {
+	const p = mainHandler(list);
+	if (!inited) {
+		inited = true;
+		initServiceWait(p);
+	}
+});
 connectDocker(2000);
 
 async function mainHandler(list) {
