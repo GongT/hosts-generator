@@ -11,11 +11,13 @@
 		"@gongt/jenv-data": "^1.2.3",
 		"@types/debug": "0.0.29",
 		"@types/node": "^6.0.51",
+		"colors": "^1.1.2",
 		"debug": "^2.3.3",
 		"docker-events": "0.0.2",
 		"dockerode": "^2.3.1",
 		"source-map-support": "^0.4.6",
-		"typescript-common-library": "git+https://github.com/GongT/typescript-common-library.git"
+		"typescript-common-library": "git+https://github.com/GongT/typescript-common-library.git",
+		"winston": "^2.3.1"
 	},
 	"scripts": {
 		"build": "microbuild build",

@@ -24,7 +24,7 @@ build.npmInstallSource(JsonEnv.gfw.npmRegistry.upstream);
 build.npmInstall('./package.json', ['git', 'python', 'g++', 'make']);
 
 build.systemdType('notify');
-build.startupCommand('dist/boot.js');
+build.startupCommand('dist/entry.js');
 build.shellCommand('/usr/local/bin/node');
 // build.stopCommand('stop.sh');
 
@@ -38,7 +38,6 @@ build.environmentVariable('DEBUG', 'ip:*,host:*,docker');
 
 build.volume('/var/run', './host-var-run');
 
-build.dependService('nginx', 'https://github.com/GongT/nginx-docker.git');
 build.dependService('microservice-dnsmasq', 'https://github.com/GongT/microservice-dnsmasq.git');
 build.dockerRunArgument('--volumes-from=microservice-dnsmasq');
 
