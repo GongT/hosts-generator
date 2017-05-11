@@ -1,5 +1,5 @@
 import {MicroBuildHelper} from "./.micro-build/x/microbuild-helper";
-import {MicroBuildConfig, ELabelNames, EPlugins} from "./.micro-build/x/microbuild-config";
+import {EPlugins, MicroBuildConfig} from "./.micro-build/x/microbuild-config";
 import {JsonEnv} from "./.jsonenv/_current_result";
 declare const build: MicroBuildConfig;
 declare const helper: MicroBuildHelper;
@@ -23,7 +23,11 @@ build.forceLocalDns();
 build.npmInstallSource(JsonEnv.gfw.npmRegistry.upstream);
 build.npmInstall('./package.json', ['git', 'python', 'g++', 'make']);
 
-build.systemdType('notify');
+build.systemd({
+	type: 'notify',
+	startTimeout: 15,
+	watchdog: 5,
+});
 build.startupCommand('dist/entry.js');
 build.shellCommand('/usr/local/bin/node');
 // build.stopCommand('stop.sh');
