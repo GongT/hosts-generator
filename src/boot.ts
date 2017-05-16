@@ -2,7 +2,7 @@
 import * as Debug from "debug";
 import "source-map-support/register";
 import "@gongt/jenv-data/global";
-import {initServiceWait} from "typescript-common-library/server/boot/init-systemd-service";
+import {initServiceWait} from "@gongt/ts-stl-server/boot/init-systemd-service";
 import {generateIdIpMap} from "./genterate/physical-id";
 import {handleChange, connectDocker} from "./lib/docker";
 import {detectUpstream} from "./genterate/detect-upstream";
