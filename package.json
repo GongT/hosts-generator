@@ -9,16 +9,18 @@
 	"engineStrict": true,
 	"dependencies": {
 		"@gongt/ts-stl-server": "latest",
-		"@gongt/jenv-data": "^1.2.3",
-		"@types/debug": "0.0.29",
-		"@types/node": "^6.0.51",
+		"@gongt/jenv-data": "^1.2.6",
 		"colors": "^1.1.2",
-		"debug": "^2.3.3",
+		"debug": "^2.6.8",
 		"docker-events": "0.0.2",
-		"dockerode": "^2.3.1",
-		"source-map-support": "^0.4.6",
+		"dockerode": "^2.5.0",
+		"source-map-support": "^0.4.15",
 		"systemd-daemon": "latest",
 		"winston": "^2.3.1"
+	},
+	"devDependencies": {
+		"@types/debug": "0.0.29",
+		"@types/node": "^8.0.5"
 	},
 	"scripts": {
 		"build": "microbuild build",

@@ -15,11 +15,11 @@ if (!existsSync(hostPath)) {
 }
 
 function readOriginalHosts() {
-	return readFileSync(hostPath, 'utf-8');
+	return readFileSync(hostPath, {encoding: 'utf8'});
 }
 
 function writeNewHosts(text) {
-	return writeFileSync(hostPath, text, 'utf-8');
+	return writeFileSync(hostPath, text, {encoding: 'utf8'});
 }
 
 export function mergeHosts(hostsText) {
