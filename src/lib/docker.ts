@@ -1,6 +1,6 @@
 import * as Debug from "debug";
-import {docker_list_containers} from "./docker-list-containers";
 import {docker_inspect_all} from "./docker-instpect";
+import {docker_list_containers} from "./docker-list-containers";
 const Dockerode = require("dockerode");
 const DockerEvents = require("docker-events");
 
@@ -9,7 +9,7 @@ const handlers: Handler[] = [];
 const debug = Debug('docker');
 
 export const docker = new Dockerode({
-	socketPath: process.env.RUN_IN_DOCKER? '/data/host-var-run/docker.sock' : '/var/run/docker.sock'
+	socketPath: process.env.RUN_IN_DOCKER? '/data/host-var-run/docker.sock' : '/var/run/docker.sock',
 });
 const emitter = new DockerEvents({docker});
 
@@ -75,12 +75,12 @@ function delayGenerate() {
 		return;
 	}
 	if (!t) {
-		debug('wait %ss generate host...', WAIT_TIME / 1000);
+		debug('wait 1s generate host...');
 		t = setTimeout(() => {
 			t = null;
 			
 			realDo();
-		}, WAIT_TIME);
+		}, 1000);
 	}
 }
 
