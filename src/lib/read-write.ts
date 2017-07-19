@@ -1,4 +1,4 @@
-import {readFileSync, existsSync, writeFileSync} from "fs";
+import {existsSync, readFileSync, writeFileSync} from "fs";
 import {resolve} from "path";
 const hostPath = resolve(__dirname, '../../host-etc/hosts');
 
@@ -22,6 +22,13 @@ function writeNewHosts(text) {
 	return writeFileSync(hostPath, text, {encoding: 'utf8'});
 }
 
+export function clearHosts() {
+	const text = readOriginalHosts();
+	const newText = text.replace(sigReg, '').trim() + '\n';
+	if (text !== newText) {
+		writeNewHosts(newText);
+	}
+}
 export function mergeHosts(hostsText) {
 	const text = readOriginalHosts();
 	const newSection = prepend + hostsText.trim() + append;

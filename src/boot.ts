@@ -1,14 +1,14 @@
+import "@gongt/jenv-data/global";
+import {initServiceWait} from "@gongt/ts-stl-server/boot/init-systemd-service";
 ///<reference path="./globals.d.ts"/>
 import * as Debug from "debug";
 import "source-map-support/register";
-import "@gongt/jenv-data/global";
-import {initServiceWait} from "@gongt/ts-stl-server/boot/init-systemd-service";
-import {generateIdIpMap} from "./genterate/physical-id";
-import {handleChange, connectDocker} from "./lib/docker";
 import {detectUpstream} from "./genterate/detect-upstream";
 import {runningDockerContainers} from "./genterate/docker-containers";
 import {serviceNotOnCurrent} from "./genterate/outside-services";
-import {mergeHosts} from "./lib/read-write";
+import {generateIdIpMap} from "./genterate/physical-id";
+import {connectDocker, handleChange} from "./lib/docker";
+import {clearHosts, mergeHosts} from "./lib/read-write";
 
 const debug = Debug('host:main');
 const sub_debug = Debug('host:gen');
@@ -25,6 +25,12 @@ handleChange((list) => {
 	}
 });
 connectDocker(2000);
+
+process.on('SIGTERM', () => {
+	console.log('got SIGTERM.');
+	clearHosts();
+	process.exit(1);
+});
 
 async function mainHandler(list) {
 	debug('docker status changed!');
