@@ -1,9 +1,10 @@
-import {some, forEach} from "../lib/who_am_i";
-import {whoAmI} from "../config";
 import {debugFn} from "../boot";
+import {whoAmI} from "../config";
+import {forEach} from "../lib/who_am_i";
 
 const UPSTREAM_SERVIE_NAME = 'nginx';
 
+// NOTICE: this feature may remove
 export function detectUpstream(inspects: DockerInspect[]) {
 	let subnetGateway: string, localGateway: string, remoteGateways: string[] = [];
 	
@@ -34,10 +35,6 @@ export function detectUpstream(inspects: DockerInspect[]) {
 		}
 	});
 	
-	if (!subnetGateway && !localGateway && remoteGateways.length === 0) {
-		throw new Error("can't find any server as upstream !!!");
-	}
-	
 	const hostLines: string[] = [];
 	let upstreamLocations: string[];
 	if (subnetGateway) {
@@ -52,12 +49,17 @@ export function detectUpstream(inspects: DockerInspect[]) {
 			hostLines.push(`${ip}\tnext-upstream # remote network`);
 		});
 		upstreamLocations = [localGateway];
-	} else {
+	} else if (remoteGateways.length === 0) {
 		hostLines.push(`# no upstream from local network`);
 		remoteGateways.forEach((ip) => {
 			hostLines.push(`${ip}\tupstream next-upstream`);
 		});
 		upstreamLocations = remoteGateways;
+	}else{
+		console.error("[!!!] can't find any server as upstream !!!");
+		hostLines.push(`# no upstream from local network`);
+		hostLines.push(`127.0.0.1\tupstream next-upstream`);
+		upstreamLocations=[];
 	}
 	
 	return {
