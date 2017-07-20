@@ -1,20 +1,23 @@
 import {debugFn} from "../boot";
 import {whoAmI} from "../config";
+import {getContainerAlias} from "../lib/labels";
 import {forEach} from "../lib/who_am_i";
 
 const UPSTREAM_SERVIE_NAME = 'nginx';
 
 // NOTICE: this feature may remove
 export function detectUpstream(inspects: DockerInspect[]) {
-	let subnetGateway: string, localGateway: string, remoteGateways: string[] = [];
+	let subnetGateways: string[] = [], localGateway: string, remoteGateways: string[] = [];
 	
 	debugFn('create upstream: ');
 	
-	let foundGateway = inspects.some((insp) => {
-		if (insp.Name.replace(/^\//g, '') === UPSTREAM_SERVIE_NAME) {
-			subnetGateway = insp.NetworkSettings.IPAddress;
+	let foundGateway = false;
+	inspects.forEach((insp) => {
+		const alias = getContainerAlias(insp);
+		if (insp.Name.replace(/^\//g, '') === UPSTREAM_SERVIE_NAME || alias.indexOf(UPSTREAM_SERVIE_NAME)) {
+			subnetGateways.push(insp.NetworkSettings.IPAddress);
 			debugFn(`  subnet gateway "${UPSTREAM_SERVIE_NAME}": ${insp.Id}`);
-			return true;
+			foundGateway = true;
 		}
 	});
 	if (!foundGateway) {
@@ -37,12 +40,14 @@ export function detectUpstream(inspects: DockerInspect[]) {
 	
 	const hostLines: string[] = [];
 	let upstreamLocations: string[];
-	if (subnetGateway) {
-		hostLines.push(`${subnetGateway}\tupstream # gateway service running in docker`)
+	if (foundGateway) {
+		for (let up of subnetGateways) {
+			hostLines.push(`${up}\tupstream # gateway service running in docker`)
+		}
 		remoteGateways.forEach((ip) => {
 			hostLines.push(`${ip}\tnext-upstream # remote network`);
 		});
-		upstreamLocations = [subnetGateway];
+		upstreamLocations = [...subnetGateways];
 	} else if (localGateway) {
 		hostLines.push(`${localGateway}\tupstream # local network`);
 		remoteGateways.forEach((ip) => {
@@ -55,11 +60,11 @@ export function detectUpstream(inspects: DockerInspect[]) {
 			hostLines.push(`${ip}\tupstream next-upstream`);
 		});
 		upstreamLocations = remoteGateways;
-	}else{
+	} else {
 		console.error("[!!!] can't find any server as upstream !!!");
 		hostLines.push(`# no upstream from local network`);
 		hostLines.push(`127.0.0.1\tupstream next-upstream`);
-		upstreamLocations=[];
+		upstreamLocations = [];
 	}
 	
 	return {

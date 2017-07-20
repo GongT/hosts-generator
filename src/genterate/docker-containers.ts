@@ -1,14 +1,24 @@
 ///<reference path="../lib/labels.ts"/>
 import {getAllNames, getServiceName} from "../lib/labels";
-import {debugFn} from "../boot";
+
+export function findContainerIp(item: DockerInspect): string {
+	if (item.NetworkSettings.IPAddress) {
+		return item.NetworkSettings.IPAddress;
+	}
+	for (let config of Object.values(item.NetworkSettings.Networks)) {
+		if (config.IPAddress) {
+			return config.IPAddress;
+		}
+	}
+}
 
 export function runningDockerContainers(list: DockerInspect[], upstreamList: string[]) {
 	return list.map((item) => {
 		const proxy = getContainerProxySetting(item);
-		const ip = item.NetworkSettings.IPAddress;
+		const ip = findContainerIp(item);
 		const allNames = getAllNames(item);
 		
-		let ret = `${ip}\t${item.Config.Hostname} `;
+		let ret = `${ip? ip : '# no ip # - '}\t${item.Config.Hostname} `;
 		if (proxy) {
 			upstreamList.forEach((upstream) => {
 				ret += `# continue: 
