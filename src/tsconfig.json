@@ -3,7 +3,7 @@
 	"compilerOptions": {
 		"module": "commonjs",
 		"target": "es5",
-		"lib": ["es7", "es6", "es5"],
+		"lib": ["es7", "es6", "es5", "es2017.object"],
 		"moduleResolution": "node",
 		"noEmitOnError": true,
 		"declaration": true,
