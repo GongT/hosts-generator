@@ -21,7 +21,7 @@ export function runningDockerContainers(list: DockerInspect[], upstreamList: str
 		let ret = `${ip? ip : '# no ip # - '}\t${item.Config.Hostname} `;
 		if (proxy) {
 			upstreamList.forEach((upstream) => {
-				ret += `# continue: 
+				ret += ` # continue:
 ${upstream}\t${allNames.join(' ')}`;
 			});
 		} else {

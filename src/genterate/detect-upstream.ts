@@ -2,6 +2,7 @@ import {debugFn} from "../boot";
 import {whoAmI} from "../config";
 import {getContainerAlias} from "../lib/labels";
 import {forEach} from "../lib/who_am_i";
+import {findContainerIp} from "./docker-containers";
 
 const UPSTREAM_SERVIE_NAME = 'nginx';
 
@@ -14,8 +15,8 @@ export function detectUpstream(inspects: DockerInspect[]) {
 	let foundGateway = false;
 	inspects.forEach((insp) => {
 		const alias = getContainerAlias(insp);
-		if (insp.Name.replace(/^\//g, '') === UPSTREAM_SERVIE_NAME || alias.indexOf(UPSTREAM_SERVIE_NAME)) {
-			subnetGateways.push(insp.NetworkSettings.IPAddress);
+		if (insp.Name.replace(/^\//g, '') === UPSTREAM_SERVIE_NAME || alias.indexOf(UPSTREAM_SERVIE_NAME) !== -1) {
+			subnetGateways.push(findContainerIp(insp));
 			debugFn(`  subnet gateway "${UPSTREAM_SERVIE_NAME}": ${insp.Id}`);
 			foundGateway = true;
 		}
