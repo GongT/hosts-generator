@@ -15,6 +15,7 @@ package-lock.json
 !.*ignore
 !.gitinclude
 dist/
+!.babelrc
 ### <<< END MICRO-BUILD SECTION
 
 host-etc/

@@ -1,12 +1,15 @@
+import {createLogger} from "@gongt/ts-stl-library/log/debug";
+import {LOG_LEVEL} from "@gongt/ts-stl-library/log/levels";
 import {serverMap, whoAmI} from "../config";
 // import {resolve4} from "dns";
 
 let cache = '';
+
 export async function generateIdIpMap() {
 	if (cache) {
 		return cache;
 	}
-	const ps = Object.keys(serverMap).map(async(i) => {
+	const ps = Object.keys(serverMap).map(async (i) => {
 		const item = serverMap[i];
 		if (item.id === whoAmI.id) {
 			return `127.0.0.1\t${item.id}`;
@@ -33,11 +36,14 @@ export async function generateIdIpMap() {
 const resolve4 = require('dns').resolve4;
 let nextCacheInvalid = new Date;
 let cached = [];
+const sill = createLogger(LOG_LEVEL.SILLY, 'dns');
+
 function resolveDnsIpv4Promise(hostname): Promise<string[]> {
 	hostname = hostname.replace(/:\d+$/, ''); // no port
 	
 	return new Promise((resolve, reject) => {
 		if (new Date > nextCacheInvalid) {
+			sill('lookup %s', hostname);
 			resolve4(hostname, {ttl: true}, (err, hostlist) => {
 				if (err) {
 					reject(err);
