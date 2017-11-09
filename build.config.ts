@@ -26,7 +26,7 @@ build.npmInstall('./package.json', ['git', 'python', 'g++', 'make']);
 
 build.systemd({
 	type: 'notify',
-	watchdog: 5,
+//	watchdog: 5,
 });
 build.startupCommand('dist/entry.js');
 build.shellCommand('/usr/local/bin/node');
